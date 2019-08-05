@@ -7,11 +7,11 @@ class animation():
 
         current_point = [None, None]
     
-        if self.direction == 'top':
+        if self.anim[0] == 'top':
             current_point[0] = self.destination[0]
             current_point[1] = 0
 
-        if self.direction == 'bottom':
+        if self.anim[0] == 'bottom':
             current_point[0] = self.destination[0]
             current_point[1] = display_height            
             
@@ -19,14 +19,6 @@ class animation():
 
 
     def __init__(self, surface, destination, anim = None, speed = None):
-
-    """
-
-    surface = surface of the object
-    destination = the destination coordinates of the surface in the format [x, y]
-    anim = A list which holds the animation style
-
-    """
     
         self.surface = surface
         self.destination = destination
@@ -35,27 +27,34 @@ class animation():
             self.anim_prog = False
         else:
             self.anim = anim
-            self.anim_prog = anim[0]
+            self.anim_prog = anim
             self.current_point = self.setStartPoint()
 
-        self.sec_animation = sec_animation
-        self.speed = speed
+        self.speed = speed if speed != None
             
-    
+			
+    def updateProgress(self):
+	
+		if self.anim[0] == 'top' and self.current_point > self.destination:
+			if type(self.anim_prog) == str
+				self.anim_prog = ''
+		
+		
     def getNextPoint(self):
         
-        if self.anim_prog == 'top':
+        if self.anim_prog[0] == 'top' or self.anim[1] == 'bottom_reverse':
             self.current_point[1] = self.current_point[1] + self.speed
-            if self.current_point[1] >= self.destination[1]:
-                self.anim_prog = getNextAnim()
 
-        if self.anim[1] = 'reverse':
-            self.anim_prog = 'reverse'
+        if self.anim[0] == 'bottom' or self.anim[1] == 'top_reverse':
+             self.current_point[1] = self.current_point[1] - self.speed:
+		
+		if self.anim[1] == 'vanish':
+             self.current_point[1] = self.current_point[1] - self.speed
 
-        
+		self.updateProgress()
 
         return self.current_point
-    
+		
 
     def getSize(self):
 
