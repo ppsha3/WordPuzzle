@@ -13,56 +13,49 @@ class animation():
 
         if self.direction == 'bottom':
             current_point[0] = self.destination[0]
-            current_point[1] = 0
-            
-        if self.direction == 'left':
-            current_point[0] = self.destination[0]
-            current_point[1] = 0
-            
-        if self.direction == 'right':
-            current_point[0] = self.destination[0]
-            current_point[1] = 0
+            current_point[1] = display_height            
             
         return current_point
 
 
-    def __init__(self, surface, destination, direction = None, speed = None):
+    def __init__(self, surface, destination, anim = None, speed = None):
+
+    """
+
+    surface = surface of the object
+    destination = the destination coordinates of the surface in the format [x, y]
+    anim = A list which holds the animation style
+
+    """
     
         self.surface = surface
         self.destination = destination
-    
-        self.speed = speed
         
-        if direction == None:
-            self.current_point = []
-            self.done = True
+        if anim == None:
+            self.anim_prog = False
         else:
-            self.direction = direction
+            self.anim = anim
+            self.anim_prog = anim[0]
             self.current_point = self.setStartPoint()
-            self.done = False
-        
+
+        self.sec_animation = sec_animation
+        self.speed = speed
+            
     
     def getNextPoint(self):
         
-        if self.direction == 'top':
-            self.current_point[0] = self.destination[0] 
+        if self.anim_prog == 'top':
             self.current_point[1] = self.current_point[1] + self.speed
             if self.current_point[1] >= self.destination[1]:
-                self.current_point[1] = self.destination[1]
+                self.anim_prog = getNextAnim()
 
-        if self.direction == 'bottom':
-            self.current_point[0] = self.destination[0]
-            self.current_point[1] = 0
-            
-        if self.direction == 'left':
-            self.current_point[0] = self.destination[0]
-            self.current_point[1] = 0
-            
-        if self.direction == 'right':
-            self.current_point[0] = self.destination[0]
-            self.current_point[1] = 0
-            
+        if self.anim[1] = 'reverse':
+            self.anim_prog = 'reverse'
+
+        
+
         return self.current_point
+    
 
     def getSize(self):
 
@@ -92,7 +85,7 @@ class Button():
         if button_size != None :
             self.button_size = button_size
         else:
-            self.button_size = [50, 27]
+            self.button_size = [50, 25]
 
         self.light_colour = (colour[0] - 25, colour[1] - 25, colour[2] - 25)
         
@@ -119,15 +112,15 @@ def play_music(file_name):
 
 def animate(animation_obj):
 
-    if not animation_obj.done:
+    if type(animation_obj.anim_prog) == str:
         gameDisplay.blit(animation_obj.surface, animation_obj.current_point)
-        current_point = animation_obj.getNextPoint()
-        if animation_obj.destination <= current_point:
-            animation_obj.done = True
-    else:
+        animation_obj.current_point = animation_obj.getNextPoint()
+    elif animation_obj.anim_prog == 'finish':
         gameDisplay.blit(animation_obj.surface, animation_obj.destination)
+        return True
+    else:
+        return True
         
-    return animation_obj.done
 
 
 def take_input():
@@ -144,6 +137,7 @@ def game_intro():
 
     start_button = Button(grey, (335, 450), (100, 50))
     start_button.setText('Start')
+    start_button.draw()
 
     intro = True
 
@@ -152,8 +146,7 @@ def game_intro():
         gameDisplay.fill(white)
 
         if animate(welcome_obj):
-
-            start_button.draw()
+            
             gameDisplay.blit(start_button.txt_surf, start_button.txt_loc)
 
             for event in pygame.event.get():
